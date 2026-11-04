@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <style>
+    
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #3d394d;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+
+    
+    body::before {
+      content: '';
+      position: absolute;
+      width-height:150%;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.14901960784313725) 0%, transparent 50%),
+                  linear-gradient(135deg, rgba(245, 245, 245, 0.2) 0%, transparent 60%);
+      pointer-events: none;
+      transform: rotate(-10deg);
+    }
+
+   
+    .calculator-container {
+      position: relative;
+      width: 340px;
+      padding: 30px 20px 25px 20px;
+      background: rgba(230, 235, 240, 0.45); 
+      backdrop-filter: blur(25px) saturate(120%);
+      -webkit-backdrop-filter: blur(25px) saturate(120%);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 20px 50px rgba(199, 199, 199, 0.25098039215686274),
+                  inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    }
+
+    .display-bezel {
+      background: rgba(45, 48, 51);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .sensor-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding: 0 4px;
+      opacity: 0.6;
+      font-size: 11px;
+      color: #FFFFFF;
+    }
+    .solar-panel {
+      width: 45px;
+      height: 14px;
+      background: #4a3b32;
+      border: 1px solid #2b221e;
+      border-radius: 2px;
+    }
+
+    
+    .screen {
+      width: 100%;
+      height: 65px;
+      background-color: #767A7B;
+      border: 2px solid #393D45;
+      box-shadow: inset 2px 2px 5px rgba(0,0,0,0.15);
+      border-radius: 4px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 32px;
+      color: #0A0A0C;
+      text-align: right;
+      padding: 10px;
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    /* Keyboard layout */
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); /* 5 columns matching the reference device */
+      gap: 10px;
+    }
+
+    /* Standard Button Style */
+    button {
+      height: 42px;
+      border: none;
+      font-size: 14px;
+      font-weight: bold;
+      color: #b4b6c9;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 3px 5px rgba(0,0,0,0.15), 
+                  inset 0 1px 0 rgba(255,255,255,0.6);
+      transition: all 0.1s ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    }
+
+    .btn-pill {
+      border-radius: 8px;
+    }
+
+    .btn-oval {
+      border-radius: 12px;
+    }
+
+    /* Color variations matching the layout scheme */
+    .btn-white {
+      background: #ffffff;
+      color: #222;
+      border-bottom: 2px solid #dcdcdc;
+    }
+    .btn-white:active { border-bottom: none; }
+
+    .btn-gray {
+      background: #ced4da;
+      color: #333;
+      border-bottom: 2px solid #adb5bd;
+    }
+    .btn-gray:active { border-bottom: none; }
+
+    .btn-blue {
+      background: #4a4376;
+      color: #FFFFFF;
+      border-bottom: 2px solid #18191D;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+    }
+    .btn-blue:active { border-bottom: none; }
+
+    /* Special continuous layout tall button (+) */
+    .tall-btn {
+      grid-row: span 2;
+      height: 94px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator-container">
+    <!-- Top Display System -->
+    <div class="display-bezel">
+      <div class="sensor-bar">
+        <span>๋࣭ ⭑⚝ᝰ.ᐟ</span>
+        <div class="solar-panel"></div>
+        <span>━╋愛ִֶָ🪽་༘</span>
+      </div>
+      <input type="text" class="screen" id="calc-screen" value="0" disabled />
+    </div>
+
+    <!-- Interface Button Grid -->
+    <div class="keypad">
+      <!-- Row 1 -->
+      <button class="btn-pill btn-gray" onclick="pressOperator('%')">%</button>
+      <button class="btn-pill btn-gray" onclick="pressSpecial('sqrt')">√</button>
+      <button class="btn-pill btn-gray" onclick="pressSpecial('plusminus')">+/-</button>
+      <button class="btn-pill btn-gray" onclick="pressSpecial('mrc')">MRC</button>
+      <button class="btn-pill btn-gray" onclick="pressSpecial('m-')">M-</button>
+
+      <!-- Row 2 -->
+      <button class="btn-oval btn-blue" onclick="clearAll()">AC</button>
+      <button class="btn-oval btn-white" onclick="pressNumber('7')">7</button>
+      <button class="btn-oval btn-white" onclick="pressNumber('8')">8</button>
+      <button class="btn-oval btn-white" onclick="pressNumber('9')">9</button>
+      <button class="btn-oval btn-gray" onclick="pressOperator('/')">÷</button>
+
+      <!-- Row 3 -->
+      <button class="btn-oval btn-blue" onclick="clearEntry()">CE</button>
+      <button class="btn-oval btn-white" onclick="pressNumber('4')">4</button>
+      <button class="btn-oval btn-white" onclick="pressNumber('5')">5</button>
+      <button class="btn-oval btn-white" onclick="pressNumber('6')">6</button>
+      <button class="btn-oval btn-gray" onclick="pressOperator('*')">×</button>
+
+         <!-- Row 4 -->
+      <button class="btn-oval btn-white" onclick="pressNumber('0')">0</button>
+      <button class="btn-oval btn-white" onclick="pressNumber('1')">1</button>
+      <button class="btn-oval btn-white" onclick="pressNumber('2')">2</button>
+      <button class="btn-oval btn-white" onclick="pressNumber('3')">3</button>
+      <button class="btn-oval btn-gray" onclick="pressOperator('+')">+</button>
+
+      <!-- Row 5 -->
+      <button class="btn-oval btn-white" onclick="pressNumber('00')">00</button>
+      <button class="btn-oval btn-white" onclick="pressDecimal('.')">.</button>
+      <button class="btn-oval btn-gray" onclick="pressOperator('-')">-</button>
+      <button class="btn-oval btn-gray" style="grid-column: span 2;" onclick="calculate()">=</button>
+    </div>
+
+  <!-- Computational Logic Engine -->
+  <script>
+    const screen = document.getElementById('calc-screen');
+    let currentInput = '0';
+    let previousInput = '';
+    let operation = null;
+    let shouldResetScreen = false;
+
+    function pressNumber(num) {
+      if (currentInput === '0' && num !== '00' || shouldResetScreen) {
+        currentInput = num;
+        shouldResetScreen = false;
+      } else if (currentInput === '0' && num === '00') {
+        return;
+      } else {
+        currentInput += num;
+      }
+      updateScreen();
+    }
+
+    function pressDecimal(dot) {
+      if (shouldResetScreen) {
+        currentInput = '0.';
+        shouldResetScreen = false;
+        updateScreen();
+        return;
+      }
+      if (!currentInput.includes(dot)) {
+        currentInput += dot;
+      }
+      updateScreen();
+    }
+
+    function pressOperator(op) {
+      if (operation !== null) calculate();
+      previousInput = currentInput;
+      operation = op;
+      shouldResetScreen = true;
+    }
+
+    function calculate() {
+      if (operation === null || shouldResetScreen) return;
+      let result = 0;
+      const prev = parseFloat(previousInput);
+      const current = parseFloat(currentInput);
+
+      if (isNaN(prev) || isNaN(current)) return;
+
+      switch (operation) {
+        case '+': result = prev + current; break;
+        case '-': result = prev - current; break;
+        case '*': result = prev * current; break;
+        case '/': result = current === 0 ? 'Error' : prev / current; break;
+        case '%': result = (prev / 100) * current; break;
+        default: return;
+      }
+
+      currentInput = String(result);
+      operation = null;
+      shouldResetScreen = true;
+      updateScreen();
+    }
+
+    function pressSpecial(action) {
+      let value = parseFloat(currentInput);
+      if (isNaN(value)) return;
+
+      if (action === 'sqrt') {
+        currentInput = value < 0 ? 'Error' : String(Math.sqrt(value));
+      } else if (action === 'plusminus') {
+        currentInput = String(value * -1);
+      }
+      updateScreen();
+    }
+
+    function clearAll() {
+      currentInput = '0';
+      previousInput = '';
+      operation = null;
+      updateScreen();
+    }
+
+    function clearEntry() {
+      currentInput = '0';
+      updateScreen();
+    }
+
+    function updateScreen() {
+      // Basic character clipping boundary limit for physical-style alignment
+      if (currentInput.length > 10) {
+        screen.value = currentInput.substring(0, 10);
+      } else {
+        screen.value = currentInput;
+      }
+    }
+  </script>
+</body>
+</html>
